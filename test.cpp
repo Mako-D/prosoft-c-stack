@@ -133,35 +133,35 @@ struct ModifyTests : ::testing::Test
     hstack_t stack = -1;
 };
 
-//TEST_F(ModifyTests, PushBadArgs)
-//{
-//    stack_push(stack, nullptr, 0u);
-//    EXPECT_EQ(stack_size(stack), 0u);
-//
-//    const int data_out = 1;
-//    stack_push(stack, &data_out, 0u);
-//    EXPECT_EQ(stack_size(stack), 0u);
-//
-//    stack_push(stack, nullptr, sizeof(data_out));
-//    EXPECT_EQ(stack_size(stack), 0u);
-//}
-
-TEST_F(ModifyTests, PopBadArgs)
+TEST_F(ModifyTests, PushBadArgs)
 {
-    const size_t size = 5;
-    const int data_in[size] = {1};
-    stack_push(stack, &data_in[0], sizeof(data_in));
-    ASSERT_EQ(stack_size(stack), 1u);
+    stack_push(stack, nullptr, 0u);
+    EXPECT_EQ(stack_size(stack), 0u);
 
-    EXPECT_EQ(stack_pop(stack, nullptr, 0u), 0u);
+    const int data_out = 1;
+    stack_push(stack, &data_out, 0u);
+    EXPECT_EQ(stack_size(stack), 0u);
 
-    int data_out[size - 1] = {0};
-    EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), 0u);
-    EXPECT_THAT(data_out, ::testing::Each(0));
-
-    EXPECT_EQ(stack_pop(stack, nullptr, sizeof(data_in)), 0u);
-    EXPECT_THAT(data_out, ::testing::Each(0));
+    stack_push(stack, nullptr, sizeof(data_out));
+    EXPECT_EQ(stack_size(stack), 0u);
 }
+
+//TEST_F(ModifyTests, PopBadArgs)
+//{
+//    const size_t size = 5;
+//    const int data_in[size] = {1};
+//    stack_push(stack, &data_in[0], sizeof(data_in));
+//    ASSERT_EQ(stack_size(stack), 1u);
+//
+//    EXPECT_EQ(stack_pop(stack, nullptr, 0u), 0u);
+//
+//    int data_out[size - 1] = {0};
+//    EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), 0u);
+//    EXPECT_THAT(data_out, ::testing::Each(0));
+//
+//    EXPECT_EQ(stack_pop(stack, nullptr, sizeof(data_in)), 0u);
+//    EXPECT_THAT(data_out, ::testing::Each(0));
+//}
 
 TEST_F(ModifyTests, PopFromEmptyStack)
 {
