@@ -1,6 +1,10 @@
 #ifndef CSTACK_H
 #define CSTACK_H
 
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+
 typedef int hstack_t;
 
 hstack_t stack_new(void);
