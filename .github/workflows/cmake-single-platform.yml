@@ -2,9 +2,9 @@ name: testing_library
 
 on:
   push:
-    branches: [ master ]
+    branches: [ lookingfor_memoryLeak ]
   pull_request:
-    branches: [ master ]
+    branches: [ lookingfor_memoryLeak ]
 
 jobs:
   build:
