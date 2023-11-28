@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <algorithm>
 
 extern "C" {
 #include "cstack.h"
@@ -149,13 +150,14 @@ TEST_F(ModifyTests, PushBadArgs)
 TEST_F(ModifyTests, PopBadArgs)
 {
     const size_t size = 5;
-    const int data_in[size] = {1};
+    int data_in[size] = { 0 };
+    std::fill_n(data_in, size, 1);
     stack_push(stack, &data_in[0], sizeof(data_in));
     ASSERT_EQ(stack_size(stack), 1u);
 
     EXPECT_EQ(stack_pop(stack, nullptr, 0u), 0u);
 
-    int data_out[size - 1] = {0};
+    int data_out[size - 1] = {0,0,0,0};
     EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), 0u);
     EXPECT_THAT(data_out, ::testing::Each(0));
 
