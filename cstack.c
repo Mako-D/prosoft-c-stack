@@ -58,9 +58,21 @@ void stack_free(const hstack_t hstack)
     }
 
     stack_t* ptrStack = g_table.stacks[hstack];
+
     if (ptrStack->entry != NULL) {
+        for (int i = 0, s = stack_size(hstack); i < s; ++i)
+        {
+            node_t* _nextTopNode = ptrStack->entry->prev;
+
+            free(ptrStack->entry->data);
+            free(ptrStack->entry);
+
+            ptrStack->entry = _nextTopNode;
+        }
+
         free(ptrStack->entry);
     }
+
     free(ptrStack);
     g_table.stacks[hstack] = (stack_t*)NULL;
     --g_table.count;
