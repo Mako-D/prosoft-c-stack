@@ -15,6 +15,7 @@ typedef struct node
 {
     void*                   data;
     struct node*            prev;
+    unsigned int            size;
 } node_t;
 #pragma pack(pop)
 
@@ -110,7 +111,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
         return;
     }
    
-
+    ptr->size = size;
     ptr->data = malloc(size);
     if (ptr->data == NULL) {
         free(ptr);
@@ -138,10 +139,15 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
         return 0;
     }
 
+    if (g_table.stacks[hstack]->entry->size != size){
+        return 0;
+    }
+
     memcpy(data_out, g_table.stacks[hstack]->entry->data, size);
 
     node_t* _nextTopNode = g_table.stacks[hstack]->entry->prev;
 
+    free(g_table.stacks[hstack]->entry->size);
     free(g_table.stacks[hstack]->entry->data);
     free(g_table.stacks[hstack]->entry);
 
