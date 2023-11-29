@@ -149,7 +149,7 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
         return 0;
     }
 
-    if (g_table.stacks[hstack]->entry->size != size){
+    if (g_table.stacks[hstack]->entry->size > size){
         return 0;
     }
 
