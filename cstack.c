@@ -10,29 +10,23 @@
 
 // ========================
 
-#pragma pack(push, 1)
 typedef struct node 
 {
     void*                   data;
     struct node*            prev;
     unsigned int            size;
 } node_t;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct stack
 {
     struct node*            entry;
 } stack_t;
-#pragma pack(pop)
 
-#pragma pack(push, 1)
 typedef struct stack_entries_table 
 {
     stack_t*                stacks[STACK_TABLE_HANDLER]; // Óêàçûâàåò íà óêàçàòåëè âõîäà â ñòåêè
     int                     count;
 } stack_entries_table_t;
-#pragma pack(pop)
 
 stack_entries_table_t g_table = {.stacks = NULL, .count = 0 };
 
