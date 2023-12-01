@@ -55,9 +55,10 @@ void stack_free(const hstack_t hstack)
 
     if (_ptrStack->entry != NULL) 
     {
+        node_t* _nextTopNode = (node_t*)NULL;
         for (int _i = 0, _s = stack_size(hstack); _i < _s; ++_i)
         {
-            node_t* _nextTopNode = _ptrStack->entry->prev;
+            _nextTopNode = _ptrStack->entry->prev;
 
             free(_ptrStack->entry->data);
             free(_ptrStack->entry);
@@ -93,7 +94,7 @@ unsigned int stack_size(const hstack_t hstack)
 
     int _i = 0;
 
-    for (node_t* _node = g_table.stacks[hstack]->entry; !(_node == NULL); _node = _node->prev) 
+    for (node_t* _node = g_table.stacks[hstack]->entry, _null_ptr = (node_t*)NULL; _node != _null_ptr; _node = _node->prev) 
     {
         ++_i;
     }
@@ -106,8 +107,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
     {
         return;
     }
-
-    if (data_in == NULL || size <= 0) 
+    else if (data_in == NULL || size <= 0) 
     {
         return;
     }
@@ -129,9 +129,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
     }
 
     memcpy(_ptr->data, data_in, size);
-
     _ptr->prev = g_table.stacks[hstack]->entry;
-    
     g_table.stacks[hstack]->entry = _ptr;
 }
 
@@ -141,18 +139,15 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
     {
         return 0;
     }
-
-    if (data_out == NULL || size <= 0) 
+    else if (data_out == NULL || size <= 0) 
     {
         return 0;
     }
-
-    if (g_table.stacks[hstack]->entry == NULL) 
+    else if (g_table.stacks[hstack]->entry == NULL) 
     {
         return 0;
     }
-
-    if (g_table.stacks[hstack]->entry->size > size)
+    else if (g_table.stacks[hstack]->entry->size > size)
     {
         return 0;
     }
