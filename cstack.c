@@ -94,7 +94,7 @@ unsigned int stack_size(const hstack_t hstack)
 
     int _i = 0;
 
-    for (node_t* _node = g_table.stacks[hstack]->entry, _null_ptr = (node_t*)NULL; _node != _null_ptr; _node = _node->prev) 
+    for (node_t* _node = g_table.stacks[hstack]->entry; _node != (node_t*)NULL; _node = _node->prev) 
     {
         ++_i;
     }
