@@ -11,23 +11,29 @@
 
 // ========================
 
+#pragma pack(1)
 typedef struct node 
 {
     void*                   data;
     struct node*            prev;
     unsigned int            size;
 } node_t;
+#pragma pack()
 
+#pragma pack(1)
 typedef struct stack
 {
     struct node*            entry;
 } stack_t;
+#pragma pack()
 
+#pragma pack(1)
 typedef struct stack_entries_table 
 {
     stack_t*                stacks[STACK_TABLE_HANDLER];
     int                     count;
 } stack_entries_table_t;
+#pragma pack()
 
 stack_entries_table_t g_table = {.stacks = NULL, .count = 0 };
 
@@ -135,7 +141,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
         return;
     }
 
-    memcpy_s(_ptr->data, sizeof _ptr->data, data_in, size);
+    memcpy_s(_ptr->data, _ptr->size, data_in, size);
     _ptr->prev = g_table.stacks[hstack]->entry;
     g_table.stacks[hstack]->entry = _ptr;
 }
@@ -153,7 +159,7 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
         return 0;
     }
 
-    memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, sizeof g_table.stacks[hstack]->entry->data);
+    memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, g_table.stacks[hstack]->entry->size);
 
     node_t* _nextTopNode = g_table.stacks[hstack]->entry->prev;
 

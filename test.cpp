@@ -18,17 +18,17 @@ TEST(AllAPITest, BadStackHandler)
 }
 
 
-TEST(AllocationTests, Kostya1) {
+TEST(StandardUsage, OneStack_OneElem_OneType) {
     const hstack_t stack = stack_new();
     const int data_in = 1;
     stack_push(stack, &data_in, sizeof(data_in));
     int data_out;
     EXPECT_EQ(stack_pop(stack, &data_out, sizeof(data_out)), sizeof(data_out));
     EXPECT_EQ(data_out, 1);
-    stack_free(0);
+    stack_free(stack);
 }
 
-TEST(AllocationTests, Kostya2) {
+TEST(StandardUsage, OneStack_TwoElem_OneType) {
     const hstack_t stack = stack_new();
     const int data_in1 = 1;
     const int data_in2 = 2;
@@ -39,10 +39,10 @@ TEST(AllocationTests, Kostya2) {
     EXPECT_EQ(data_out, 2);
     EXPECT_EQ(stack_pop(stack, &data_out, sizeof(data_out)), sizeof(data_out));
     EXPECT_EQ(data_out, 1);
-    stack_free(0);
+    stack_free(stack);
 }
 
-TEST(AllocationTests, Kostya3) {
+TEST(StandardUsage, OneStack_TwoElem_TwoType) {
     const hstack_t stack = stack_new();
     const int data_in1 = 1;
     const double data_in2 = 2.2;
@@ -55,10 +55,10 @@ TEST(AllocationTests, Kostya3) {
     EXPECT_EQ(data_out2, 2.2);
     EXPECT_EQ(stack_pop(stack, &data_out1, sizeof(data_out1)), sizeof(data_out1));
     EXPECT_EQ(data_out1, 1);
-    stack_free(0);
+    stack_free(stack);
 }
 
-TEST(AllocationTests, StressTest) {
+TEST(StandardUsage, StressTest) {
     const size_t count = 10;
     hstack_t stacks[count] = { -1 };
     for (size_t i = 0; i < count; ++i)
@@ -104,7 +104,7 @@ TEST(AllocationTests, SingleAllocation)
 TEST(AllocationTests, SeveralAllocations)
 {
     const size_t count = 10;
-    hstack_t stacks[count] = {-1};
+    hstack_t stacks[count] = { -1 };
     for (size_t i = 0; i < count; ++i)
     {
         stacks[i] = stack_new();
@@ -149,13 +149,13 @@ TEST_F(ModifyTests, PushBadArgs)
 TEST_F(ModifyTests, PopBadArgs)
 {
     const size_t size = 5;
-    const int data_in[size] = {1};
+    const int data_in[size] = { 1 };
     stack_push(stack, &data_in[0], sizeof(data_in));
     ASSERT_EQ(stack_size(stack), 1u);
 
     EXPECT_EQ(stack_pop(stack, nullptr, 0u), 0u);
 
-    int data_out[size - 1] = {0};
+    int data_out[size - 1] = { 0 };
     EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), 0u);
     EXPECT_THAT(data_out, ::testing::Each(0));
 
@@ -172,8 +172,8 @@ TEST_F(ModifyTests, PopFromEmptyStack)
 
 TEST_F(ModifyTests, SinglePushPop)
 {
-    const int data_in[3] = {0, 1, 2};
-    int data_out[3] = {2, 1, 0};
+    const int data_in[3] = { 0, 1, 2 };
+    int data_out[3] = { 2, 1, 0 };
     stack_push(stack, data_in, sizeof(data_in));
     EXPECT_EQ(stack_size(stack), 1u);
     EXPECT_EQ(stack_pop(stack, data_out, sizeof(data_out)), sizeof(data_out));
@@ -184,8 +184,8 @@ TEST_F(ModifyTests, SinglePushPop)
 TEST_F(ModifyTests, SeveralPushPop)
 {
     const size_t size = 3;
-    const int data_in[size] = {0, 1, 2};
-    int data_out[size] = {0, 1, 2};
+    const int data_in[size] = { 0, 1, 2 };
+    int data_out[size] = { 0, 1, 2 };
     for (size_t i = 0; i < size; ++i)
     {
         stack_push(stack, &data_in[i], sizeof(data_in[i]));

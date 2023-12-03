@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.20)
 project(cstack)
+
+
 enable_testing()
 
 option(WITH_TEST "Build test (GTest library required)" ON)
 
 include(FetchContent)
 
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 # build library
 add_library(cstack STATIC cstack.c)
+
+target_compile_features(cstack PUBLIC c_std_11)
 
 # build test
 if (WITH_TEST)
@@ -30,21 +36,12 @@ if (WITH_TEST)
 endif()
 
 # compiler-specific project settings
-if (MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    set(MSVC_FLAGS /Wall /WX)
-    target_compile_options(cstack PRIVATE ${MSVC_FLAGS})
-    target_link_options(cstack PRIVATE ${MSVC_FLAGS})
-    if (WITH_TEST)
-        target_compile_options(cstack_test PRIVATE /fsanitize=address)
-        target_compile_definitions(cstack_test PRIVATE _DISABLE_VECTOR_ANNOTATION)
-    endif()
-else()
-    target_compile_options(cstack PRIVATE -std=c11 -Wall -Wextra -Wformat -Wformat-security -Werror -Wno-error=missing-braces)
-    set(SANITIZERS_FLAGS -fsanitize=undefined -fsanitize=address)
-    if (WITH_TEST)
-        target_compile_options(cstack_test PRIVATE ${SANITIZERS_FLAGS})
-        target_link_options(cstack_test PRIVATE ${SANITIZERS_FLAGS})
-    endif()
-endif()
 
+target_compile_options(cstack PRIVATE -Wall -Wextra -Wformat -Wformat-security -Werror -Wno-error=missing-braces -Wno-error=implicit-function-declaration)
+
+set(SANITIZERS_FLAGS -fsanitize=undefined -fsanitize=address)
+
+if (WITH_TEST)
+    target_compile_options(cstack_test PRIVATE ${SANITIZERS_FLAGS})
+    target_link_options(cstack_test PRIVATE ${SANITIZERS_FLAGS})
+endif()
