@@ -1,7 +1,5 @@
 #include "cstack.h"
 
-#define __STDC_LIB_EXT1__ 1
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -144,7 +142,12 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
         return;
     }
 
-    memcpy_s(_ptr->data, _ptr->size, data_in, size);
+    #ifdef _MSC_VER
+        memcpy_s(_ptr->data, _ptr->size, data_in, size);
+    #else
+        memcpy(_ptr->data, data_in, size);
+    #endif
+
     _ptr->prev = g_table.stacks[hstack]->entry;
     g_table.stacks[hstack]->entry = _ptr;
 }
@@ -161,8 +164,12 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
     {
         return 0;
     }
-    
-    memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, g_table.stacks[hstack]->entry->size);
+
+    #ifdef _MSC_VER
+        memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, g_table.stacks[hstack]->entry->size);
+    #else
+        memcpy(data_out, g_table.stacks[hstack]->entry->data, size);
+    #endif
 
     node_t* _nextTopNode = g_table.stacks[hstack]->entry->prev;
 
