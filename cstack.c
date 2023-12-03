@@ -1,4 +1,7 @@
 #include "cstack.h"
+
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -158,7 +161,7 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
     {
         return 0;
     }
-
+    
     memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, g_table.stacks[hstack]->entry->size);
 
     node_t* _nextTopNode = g_table.stacks[hstack]->entry->prev;
