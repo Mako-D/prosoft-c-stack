@@ -1,7 +1,8 @@
 #include "cstack.h"
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Ðåàëèçàöèÿ çàïèñè äàííûõ ïîçàèìñòâîâàíà îòñþäà
-// https://constantsmatter.com/posts/generic-ds-c/
 
 // *** LIBRARY SETTINGS ***
 
@@ -24,7 +25,7 @@ typedef struct stack
 
 typedef struct stack_entries_table 
 {
-    stack_t*                stacks[STACK_TABLE_HANDLER]; // Óêàçûâàåò íà óêàçàòåëè âõîäà â ñòåêè
+    stack_t*                stacks[STACK_TABLE_HANDLER];
     int                     count;
 } stack_entries_table_t;
 
@@ -32,15 +33,21 @@ stack_entries_table_t g_table = {.stacks = NULL, .count = 0 };
 
 hstack_t stack_new(void)
 {
-    stack_t* _stack =        (stack_t*)malloc(sizeof(stack_t));
-
-    if (_stack == NULL) {
+    if(g_table.count == STACK_TABLE_HANDLER - 1)
+    {
         return -1;
     }
+
+    stack_t* _stack =        (stack_t*)malloc(sizeof(stack_t));
+
+    if (_stack == NULL) 
+    {
+        return -1;
+    }
+
     _stack->entry = NULL;
-
     g_table.stacks[g_table.count] = _stack;
-
+    
     return g_table.count++;
 }
 
@@ -76,11 +83,11 @@ void stack_free(const hstack_t hstack)
 
 int stack_valid_handler(const hstack_t hstack)
 {
-    if ((g_table.stacks[hstack] == NULL) ||
+    if ((hstack < 0) ||
 
-        (hstack < 0) ||
-
-        (hstack >= STACK_TABLE_HANDLER)) 
+        (hstack >= STACK_TABLE_HANDLER) ||
+        
+        (g_table.stacks[hstack] == NULL)) 
     {
         return 1;
     }
@@ -107,7 +114,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
 {
     if  ((stack_valid_handler(hstack)) ||
 
-        (data_in == NULL || size <= 0))
+        (data_in == NULL || size == 0))
     {
         return;
     }
@@ -128,7 +135,7 @@ void stack_push(const hstack_t hstack, const void* data_in, const unsigned int s
         return;
     }
 
-    memcpy(_ptr->data, data_in, size);
+    memcpy_s(_ptr->data, sizeof _ptr->data, data_in, size);
     _ptr->prev = g_table.stacks[hstack]->entry;
     g_table.stacks[hstack]->entry = _ptr;
 }
@@ -137,7 +144,7 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
 {
     if  ((stack_valid_handler(hstack)) ||
 
-        (data_out == NULL || size <= 0) ||
+        (data_out == NULL || size == 0) ||
 
         (g_table.stacks[hstack]->entry == NULL) ||
 
@@ -146,7 +153,7 @@ unsigned int stack_pop(const hstack_t hstack, void* data_out, const unsigned int
         return 0;
     }
 
-    memcpy(data_out, g_table.stacks[hstack]->entry->data, size);
+    memcpy_s(data_out, size, g_table.stacks[hstack]->entry->data, sizeof g_table.stacks[hstack]->entry->data);
 
     node_t* _nextTopNode = g_table.stacks[hstack]->entry->prev;
 
